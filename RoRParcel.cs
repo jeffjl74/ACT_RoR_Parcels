@@ -19,7 +19,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
-[assembly: AssemblyDescription("Tracks looting of Locked Parcels in Return of Ro raid zones")]
+[assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
 [assembly: AssemblyVersion("1.0.0.0")]
 
@@ -387,7 +387,7 @@ namespace ACT_RoR_Parcels
             }
             catch (Exception ex)
             {
-                ActGlobals.oFormActMain.WriteExceptionLog(ex, "RoR Parcels Plugin Update Download");
+                ActGlobals.oFormActMain.WriteExceptionLog(ex, "RoR Parcels Plugin Update Download:" + ex.Message);
             }
         }
 
@@ -430,6 +430,7 @@ namespace ACT_RoR_Parcels
                         var stream = await response.Content.ReadAsStreamAsync();
                         var fileStream = new FileStream(tmp, FileMode.Create);
                         await stream.CopyToAsync(fileStream);
+                        fileStream.Close();
                         Application.DoEvents();
                         FileInfo fi = new FileInfo(tmp);
                         return fi;
