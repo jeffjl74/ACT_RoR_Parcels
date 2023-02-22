@@ -55,14 +55,39 @@ namespace ACT_RoR_Parcels
                     else
                         return first;
                 case "Dates":
-                    int xIdx = 0;
-                    int yIdx = 0;
-                    if(_order == SortOrder.Descending)
+                    List<DateTime> xList = x.lootDates;
+                    List<DateTime> yList = y.lootDates;
+                    if (xList.Count == 0 && yList.Count > 0)
+                        return 1;
+                    else if (yList.Count == 0 && xList.Count > 0)
+                        return -1;
+                    else if (xList.Count == 0 && yList.Count == 0)
                     {
-                        xIdx = x.lootDates.Count - 1;
-                        yIdx = y.lootDates.Count - 1;
+                        // no loot dates
+                        // secondary sort by name, always ascending
+                        if (_order == SortOrder.Ascending)
+                            return x.Player.CompareTo(y.Player);
+                        else
+                            return y.Player.CompareTo(x.Player);
                     }
-                    return x.lootDates[xIdx].CompareTo(y.lootDates[yIdx]);
+                    else
+                    {
+                        // both have loot dates
+                        int xIdx = xList.Count - 1;
+                        int yIdx = yList.Count - 1;
+                        first = xList[xIdx].CompareTo(yList[yIdx]);
+                        if (first == 0)
+                        {
+                            // secondary sort by name, always ascending
+                            // really shouldn't ever get here
+                            if (_order == SortOrder.Ascending)
+                                return x.Player.CompareTo(y.Player);
+                            else
+                                return y.Player.CompareTo(x.Player);
+                        }
+                        else
+                            return first;
+                    }
                 case "InRaid":
                     first = x.InRaid.CompareTo(y.InRaid);
                     if(first == 0)

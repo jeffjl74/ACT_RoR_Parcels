@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using Advanced_Combat_Tracker;
 using System.IO;
 using System.Reflection;
-using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
@@ -21,11 +16,11 @@ using System.Threading;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
 
 namespace ACT_RoR_Parcels
 {
-	public class RoRParcel : UserControl, IActPluginV1
+    public class RoRParcel : UserControl, IActPluginV1
 	{
 
 		#region Designer Created Code (Avoid editing)
@@ -56,33 +51,34 @@ namespace ACT_RoR_Parcels
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.InRaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lootersBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.buttonNext = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonHelp = new System.Windows.Forms.Button();
             this.buttonTest = new System.Windows.Forms.Button();
             this.buttonShare = new System.Windows.Forms.Button();
             this.labelInstructions = new System.Windows.Forms.Label();
             this.checkBoxImport = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonHelp = new System.Windows.Forms.Button();
-            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -102,6 +98,26 @@ namespace ACT_RoR_Parcels
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView1_DataError);
             this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
+            // 
+            // playerDataGridViewTextBoxColumn
+            // 
+            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
+            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
+            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
+            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
+            this.playerDataGridViewTextBoxColumn.Width = 61;
+            // 
+            // countDataGridViewTextBoxColumn
+            // 
+            this.countDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.countDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.countDataGridViewTextBoxColumn.HeaderText = "Count";
+            this.countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
+            this.countDataGridViewTextBoxColumn.ReadOnly = true;
+            this.countDataGridViewTextBoxColumn.Width = 60;
             // 
             // DateColumn
             // 
@@ -126,6 +142,10 @@ namespace ACT_RoR_Parcels
             // 
             this.lootersBindingSource.DataMember = "Looters";
             this.lootersBindingSource.DataSource = this.looterListBindingSource;
+            // 
+            // looterListBindingSource
+            // 
+            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
             // 
             // buttonNext
             // 
@@ -162,6 +182,19 @@ namespace ACT_RoR_Parcels
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(686, 35);
             this.panel2.TabIndex = 4;
+            // 
+            // buttonHelp
+            // 
+            this.buttonHelp.AutoSize = true;
+            this.buttonHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.buttonHelp.Location = new System.Drawing.Point(3, 7);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(23, 23);
+            this.buttonHelp.TabIndex = 7;
+            this.buttonHelp.Text = "?";
+            this.toolTip1.SetToolTip(this.buttonHelp, "Visit the help on the project web page");
+            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
             // buttonTest
             // 
@@ -207,43 +240,6 @@ namespace ACT_RoR_Parcels
             this.checkBoxImport.UseVisualStyleBackColor = true;
             this.checkBoxImport.CheckedChanged += new System.EventHandler(this.checkBoxImport_CheckedChanged);
             // 
-            // buttonHelp
-            // 
-            this.buttonHelp.AutoSize = true;
-            this.buttonHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.buttonHelp.Location = new System.Drawing.Point(3, 7);
-            this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(23, 23);
-            this.buttonHelp.TabIndex = 7;
-            this.buttonHelp.Text = "?";
-            this.toolTip1.SetToolTip(this.buttonHelp, "Visit the help on the project web page");
-            this.buttonHelp.UseVisualStyleBackColor = true;
-            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-            // 
-            // playerDataGridViewTextBoxColumn
-            // 
-            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
-            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
-            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
-            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
-            this.playerDataGridViewTextBoxColumn.Width = 61;
-            // 
-            // countDataGridViewTextBoxColumn
-            // 
-            this.countDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.countDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.countDataGridViewTextBoxColumn.HeaderText = "Count";
-            this.countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
-            this.countDataGridViewTextBoxColumn.ReadOnly = true;
-            this.countDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // looterListBindingSource
-            // 
-            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
-            // 
             // RoRParcel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,10 +250,10 @@ namespace ACT_RoR_Parcels
             this.Size = new System.Drawing.Size(686, 384);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -576,8 +572,9 @@ namespace ACT_RoR_Parcels
 						if(!looter.lootDates.Contains(logTime))
                         {
 							looter.lootDates.Add(logTime);
-						}
-					}
+                            mUiContext.Post(UiUpdateGrid, null);
+                        }
+                    }
                 }
                 else if((match = regexJoined.Match(logInfo.logLine)).Success)
                 {
@@ -612,6 +609,7 @@ namespace ACT_RoR_Parcels
         private void UiUpdateGrid(object o)
         {
             lootersBindingSource.ResetBindings(false);
+            SaveSettings();
         }
 
         private void UiWhoRaid( object o)
