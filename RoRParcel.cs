@@ -12,270 +12,22 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
+using System.Linq;
 
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
 
 namespace ACT_RoR_Parcels
 {
-    public class RoRParcel : UserControl, IActPluginV1
+    public partial class RoRParcel : UserControl, IActPluginV1
 	{
 
-		#region Designer Created Code (Avoid editing)
-		/// <summary> 
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
-
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
-		#region Component Designer generated code
-
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.InRaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lootersBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.buttonNext = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.buttonHelp = new System.Windows.Forms.Button();
-            this.buttonTest = new System.Windows.Forms.Button();
-            this.buttonShare = new System.Windows.Forms.Button();
-            this.labelInstructions = new System.Windows.Forms.Label();
-            this.checkBoxImport = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.playerDataGridViewTextBoxColumn,
-            this.countDataGridViewTextBoxColumn,
-            this.DateColumn,
-            this.InRaid});
-            this.dataGridView1.DataSource = this.lootersBindingSource;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(686, 349);
-            this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
-            this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
-            this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
-            this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView1_DataError);
-            this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
-            this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
-            // 
-            // playerDataGridViewTextBoxColumn
-            // 
-            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
-            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
-            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
-            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
-            this.playerDataGridViewTextBoxColumn.Width = 61;
-            // 
-            // countDataGridViewTextBoxColumn
-            // 
-            this.countDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.countDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.countDataGridViewTextBoxColumn.HeaderText = "Count";
-            this.countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
-            this.countDataGridViewTextBoxColumn.ReadOnly = true;
-            this.countDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // DateColumn
-            // 
-            this.DateColumn.HeaderText = "Dates";
-            this.DateColumn.Name = "DateColumn";
-            this.DateColumn.ReadOnly = true;
-            this.DateColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.DateColumn.Width = 130;
-            // 
-            // InRaid
-            // 
-            this.InRaid.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.InRaid.DataPropertyName = "InRaid";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.Format = "Y;?; ";
-            this.InRaid.DefaultCellStyle = dataGridViewCellStyle2;
-            this.InRaid.HeaderText = "InRaid";
-            this.InRaid.Name = "InRaid";
-            this.InRaid.Width = 63;
-            // 
-            // lootersBindingSource
-            // 
-            this.lootersBindingSource.DataMember = "Looters";
-            this.lootersBindingSource.DataSource = this.looterListBindingSource;
-            // 
-            // looterListBindingSource
-            // 
-            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
-            // 
-            // buttonNext
-            // 
-            this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonNext.Location = new System.Drawing.Point(113, 7);
-            this.buttonNext.Name = "buttonNext";
-            this.buttonNext.Size = new System.Drawing.Size(75, 23);
-            this.buttonNext.TabIndex = 2;
-            this.buttonNext.Text = "Pick Next";
-            this.toolTip1.SetToolTip(this.buttonNext, "Sorts the list and suggests a /ran command.\r\nA /whoraid will inform the plugin ab" +
-        "out raid members.");
-            this.buttonNext.UseVisualStyleBackColor = true;
-            this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.dataGridView1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(686, 349);
-            this.panel1.TabIndex = 3;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.buttonHelp);
-            this.panel2.Controls.Add(this.buttonTest);
-            this.panel2.Controls.Add(this.buttonShare);
-            this.panel2.Controls.Add(this.labelInstructions);
-            this.panel2.Controls.Add(this.checkBoxImport);
-            this.panel2.Controls.Add(this.buttonNext);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 349);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(686, 35);
-            this.panel2.TabIndex = 4;
-            // 
-            // buttonHelp
-            // 
-            this.buttonHelp.AutoSize = true;
-            this.buttonHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.buttonHelp.Location = new System.Drawing.Point(3, 7);
-            this.buttonHelp.Name = "buttonHelp";
-            this.buttonHelp.Size = new System.Drawing.Size(23, 23);
-            this.buttonHelp.TabIndex = 7;
-            this.buttonHelp.Text = "?";
-            this.toolTip1.SetToolTip(this.buttonHelp, "Visit the help on the project web page");
-            this.buttonHelp.UseVisualStyleBackColor = true;
-            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-            // 
-            // buttonTest
-            // 
-            this.buttonTest.Location = new System.Drawing.Point(506, 5);
-            this.buttonTest.Name = "buttonTest";
-            this.buttonTest.Size = new System.Drawing.Size(75, 23);
-            this.buttonTest.TabIndex = 6;
-            this.buttonTest.Text = "Test";
-            this.buttonTest.UseVisualStyleBackColor = true;
-            this.buttonTest.Visible = false;
-            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
-            // 
-            // buttonShare
-            // 
-            this.buttonShare.Location = new System.Drawing.Point(32, 7);
-            this.buttonShare.Name = "buttonShare";
-            this.buttonShare.Size = new System.Drawing.Size(75, 23);
-            this.buttonShare.TabIndex = 5;
-            this.buttonShare.Text = "Share...";
-            this.toolTip1.SetToolTip(this.buttonShare, "Share your data with other plugin users");
-            this.buttonShare.UseVisualStyleBackColor = true;
-            this.buttonShare.Click += new System.EventHandler(this.buttonShare_Click);
-            // 
-            // labelInstructions
-            // 
-            this.labelInstructions.AutoSize = true;
-            this.labelInstructions.Location = new System.Drawing.Point(194, 12);
-            this.labelInstructions.Name = "labelInstructions";
-            this.labelInstructions.Size = new System.Drawing.Size(62, 13);
-            this.labelInstructions.TabIndex = 4;
-            this.labelInstructions.Text = "placeholder";
-            // 
-            // checkBoxImport
-            // 
-            this.checkBoxImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxImport.AutoSize = true;
-            this.checkBoxImport.Location = new System.Drawing.Point(588, 11);
-            this.checkBoxImport.Name = "checkBoxImport";
-            this.checkBoxImport.Size = new System.Drawing.Size(90, 17);
-            this.checkBoxImport.TabIndex = 3;
-            this.checkBoxImport.Text = "Parse Imports";
-            this.toolTip1.SetToolTip(this.checkBoxImport, "Check to have the plugin process imported files");
-            this.checkBoxImport.UseVisualStyleBackColor = true;
-            this.checkBoxImport.CheckedChanged += new System.EventHandler(this.checkBoxImport_CheckedChanged);
-            // 
-            // RoRParcel
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel2);
-            this.Name = "RoRParcel";
-            this.Size = new System.Drawing.Size(686, 384);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.ResumeLayout(false);
-
-		}
-
-        #endregion
-
-        private DataGridView dataGridView1;
-        private Button buttonNext;
-        private Panel panel1;
-        private Panel panel2;
-        private BindingSource looterListBindingSource;
-        private BindingSource lootersBindingSource;
-        private CheckBox checkBoxImport;
-        private DataGridViewTextBoxColumn playerDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
-        private DataGridViewComboBoxColumn DateColumn;
-        private DataGridViewTextBoxColumn InRaid;
-        private Label labelInstructions;
-        private Button buttonShare;
-        private Button buttonTest;
-
-        #endregion
+        string[] T1Zones = { "The Hunt", "Standing Storm" };
+        string[] T2Zones = { "Boundless Gulf" };
+        List<string> T1ZoneList;
+        List<string> T2ZoneList;
 
         Label lblStatus;    // The status label that appears in ACT's Plugin tab
 
@@ -287,7 +39,7 @@ namespace ACT_RoR_Parcels
         // log line parsing
 		const string logTimeStampRegexStr = @"^\((?<secs>\d{10})\)\[.{24}\] ";
 		const int timeLen = 39;
-        Regex reLoot = new Regex(logTimeStampRegexStr + @"(?<who>\w+) loots?[^:]+:Locked Parcel:", RegexOptions.Compiled);
+        Regex reLoot = new Regex(logTimeStampRegexStr + @"(?<who>\w+) loots?[^:]+:Locked Parcel: (?<where>[^\\]+)", RegexOptions.Compiled);
         Regex regexWhoRaid = new Regex(logTimeStampRegexStr + @"\/whoraid search results", RegexOptions.Compiled);
         Regex regexWho = new Regex(logTimeStampRegexStr + @"\[[^]]+\] (?<member>\w+) ", RegexOptions.Compiled);
         Regex regexWhoEnd = new Regex(logTimeStampRegexStr + @"\d+ players found", RegexOptions.Compiled);
@@ -296,6 +48,8 @@ namespace ACT_RoR_Parcels
 
         // date/time combo box selection support
         ComboBox comboTime = null;
+        bool isT1Combo = false;
+        bool isT2Combo = false;
         
         // /whoraid support
         enum tWhoStates { idle, watching }; // /whoraid state machine states
@@ -304,8 +58,6 @@ namespace ACT_RoR_Parcels
         
         // UI thread support
         WindowsFormsSynchronizationContext mUiContext = new WindowsFormsSynchronizationContext();
-        private ToolTip toolTip1;
-        private Button buttonHelp;
         bool importChecked;
 
         public RoRParcel()
@@ -324,6 +76,9 @@ namespace ACT_RoR_Parcels
 
 			xmlSerializer = new XmlSerializer(typeof(List<Looter>));
 			LoadSettings();
+
+            T1ZoneList = T1Zones.ToList();
+            T2ZoneList = T2Zones.ToList();
 
             labelInstructions.Text = "";
 
@@ -346,7 +101,7 @@ namespace ACT_RoR_Parcels
 			// Unsubscribe from any events you listen to when exiting!
 			ActGlobals.oFormActMain.OnLogLineRead -= OFormActMain_OnLogLineRead;
             ActGlobals.oFormActMain.XmlSnippetAdded -= OFormActMain_XmlSnippetAdded;
-
+            
             SaveSettings();
 			lblStatus.Text = "Plugin Exited";
 		}
@@ -510,29 +265,53 @@ namespace ACT_RoR_Parcels
                 string[] players = data.Split(':');
                 foreach (string player in players)
                 {
-                    string[] csv = player.Split(',');
                     Looter looter = new Looter();
-                    for (int i = 0; i < csv.Length; i++)
+                    int tier = 0;
+                    string[] tiers = player.Split(')');
+                    for(int j=0; j<tiers.Length; j++)
                     {
-                        string s = csv[i];
-                        if (i == 0)
+                        string[] csv = tiers[j].Split(',');
+                        for (int i = 0; i < csv.Length; i++)
                         {
-                            looter = looterList.Find(x => x.Player == s);
-                            if (looter == null)
+                            string param = csv[i];
+                            if (string.IsNullOrEmpty(param))
+                                continue;
+                            if (i == 0 && j == 0)
                             {
-                                looter = new Looter { Player = s };
-                                looterList.Add(looter);
-                            }
-                        }
-                        else if (looter != null)
-                        {
-                            Int64 t;
-                            if (Int64.TryParse(s, out t))
-                            {
-                                DateTime logTime = UnixSecondsToDateTime(t);
-                                if (!looter.lootDates.Contains(logTime))
+                                // player slot
+                                looter = looterList.Find(x => x.Player == param);
+                                if (looter == null)
                                 {
-                                    looter.lootDates.Add(logTime);
+                                    looter = new Looter { Player = param };
+                                    looterList.Add(looter);
+                                }
+                            }
+                            else if((i == 1 && j == 0) || (i == 0 && j > 0))
+                            {
+                                // time slot with tier
+                                int eq = param.IndexOf('=');
+                                if(eq >= 0)
+                                {
+                                    string digits = param.Substring(1, eq - 1);
+                                    if (Int32.TryParse(digits, out tier))
+                                    {
+                                        string rest = param.Substring(eq + 1);
+                                        Int64 t;
+                                        if (Int64.TryParse(rest, out t))
+                                        {
+                                            DateTime logTime = UnixSecondsToDateTime(t);
+                                            looter.AddTime(tier, logTime);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (looter != null)
+                            {
+                                Int64 t;
+                                if (Int64.TryParse(param, out t))
+                                {
+                                    DateTime logTime = UnixSecondsToDateTime(t);
+                                    looter.AddTime(tier, logTime);
                                 }
                             }
                         }
@@ -557,29 +336,41 @@ namespace ACT_RoR_Parcels
 					if (who == "You")
 						who = ActGlobals.charName;
 					Int64 secs = Int64.Parse(match.Groups["secs"].Value);
-					DateTime logTime = UnixSecondsToDateTime(secs);
+                    string where = match.Groups["where"].Value;
+                    int tier = 1;
+                    if (T1ZoneList.Contains(where))
+                        tier = 1;
+                    else if (T2ZoneList.Contains(where))
+                        tier = 2;
+                    DateTime logTime = UnixSecondsToDateTime(secs);
 					Looter looter = looterList.Find(x => x.Player == who);
 					if (looter == null)
                     {
 						looter = new Looter();
 						looter.Player = who;
-						looter.lootDates.Add(logTime);
-						looterList.Add(looter);
+                        looter.InRaid = 1;
+                        looter.AddTime(tier, logTime);
+                        looterList.Add(looter);
+                        // add to /whoraid after the looter is in the player list for proper update
+                        if (!whoRaid.Contains(who))
+                            whoRaid.Add(who);
                         mUiContext.Post(UiUpdateGrid, null);
                     }
                     else
                     {
-						if(!looter.lootDates.Contains(logTime))
-                        {
-							looter.lootDates.Add(logTime);
+                        looter.InRaid = 1;
+                        if(looter.AddTime(tier, logTime))
                             mUiContext.Post(UiUpdateGrid, null);
-                        }
                     }
                 }
                 else if((match = regexJoined.Match(logInfo.logLine)).Success)
                 {
-                    whoRaid.Add(match.Groups["member"].Value);
-                    mUiContext.Post(UiWhoRaid, null);
+                    string who = match.Groups["member"].Value;
+                    if (!whoRaid.Contains(who))
+                    {
+                        whoRaid.Add(who);
+                        mUiContext.Post(UiWhoRaid, null);
+                    }                
                 }
                 else if ((match = regexLeft.Match(logInfo.logLine)).Success)
                 {
@@ -614,17 +405,10 @@ namespace ACT_RoR_Parcels
 
         private void UiWhoRaid( object o)
         {
-            foreach(Looter looter in looterList)
-            {
-                if (whoRaid.Contains(looter.Player))
-                    looter.InRaid = 1;
-                else
-                    looter.InRaid = 0;
-            }
-            foreach(string s in whoRaid)
+            foreach (string s in whoRaid)
             {
                 Looter looter = looterList.Find(x => x.Player == s);
-                if(looter == null)
+                if (looter == null)
                 {
                     // add the /whoraid player to the looter list
                     looter = new Looter();
@@ -632,32 +416,53 @@ namespace ACT_RoR_Parcels
                     looterList.Add(looter);
                 }
             }
+            foreach (Looter looter in looterList)
+            {
+                if (whoRaid.Contains(looter.Player))
+                    looter.InRaid = 1;
+                else
+                    looter.InRaid = 0;
+            }
             lootersBindingSource.ResetBindings(false);
         }
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            LooterSorter looterSorter = new LooterSorter("InRaid", SortOrder.Descending);
-            looterList.Sort(looterSorter);
+            string sortFor = "T1";
+            string zone1 = T1ZoneList.Find(x => ActGlobals.oFormActMain.CurrentZone.Contains(x));
+            string zone2 = T2ZoneList.Find(x => ActGlobals.oFormActMain.CurrentZone.Contains(x));
+            if (zone1 != null || (zone1 == null && zone2 == null))
+            {
+                LooterSorter looterSorter = new LooterSorter("In Raid", SortOrder.Descending);
+                looterList.Sort(looterSorter);
+            }
+            else
+            {
+                LooterSorter looterSorter = new LooterSorter("In Raid2", SortOrder.Descending);
+                looterList.Sort(looterSorter);
+                sortFor = "T2";
+            }
+
             lootersBindingSource.ResetBindings(false);
             if (looterList.Count > 0)
             {
                 if (looterList[0].InRaid == 1)
                 {
-                    int lowest = looterList[0].Count;
+                    int lowest = looterList[0].T1Count;
                     int i = 1;
                     for (; i < looterList.Count; i++)
                     {
-                        if (looterList[i].Count > lowest || looterList[i].InRaid < 1)
+                        if (looterList[i].T1Count > lowest || looterList[i].InRaid < 1)
                             break;
                     }
-                    labelInstructions.Text = $"/ran {i} to choose the next looter.";
+                    labelInstructions.Text = $"/ran {i} to choose the next {sortFor} looter.";
                 }
                 else
                 {
                     labelInstructions.Text = "No players are flagged as raiding. Did you forget /whoraid?";
                 }
             }
+
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -665,13 +470,16 @@ namespace ACT_RoR_Parcels
             // don't know why this happens after a combobox change. the cell contains a DateTime
             Debug.WriteLine("Data Error: " + e.Exception.Message);
             e.Cancel = true;
-            //DataGridViewComboBoxCell comboCell = dataGridView1.Rows[e.RowIndex].Cells["DateColumn"] as DataGridViewComboBoxCell;
-            //if (comboTime != null)
-            //	comboCell.Value = comboTime.SelectedItem;
-            //else if (comboCell.Items.Count > 0)
-            //	comboCell.Value = comboCell.Items[comboCell.Items.Count-1];
-            //else
-            //	comboCell.Value = "";
+        }
+
+        private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            isT1Combo = false;
+            isT2Combo = false;
+            if (e.ColumnIndex == dataGridView1.Columns["DateColumn"].Index)
+                isT1Combo = true;
+            else if (e.ColumnIndex == dataGridView1.Columns["T2DateColumn"].Index)
+                isT2Combo = true;
         }
 
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
@@ -691,11 +499,6 @@ namespace ACT_RoR_Parcels
             {
                 // Cast the cell to a DataGridViewComboBoxCell
                 var cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (cell.ReadOnly)
-                {
-                    Debug.WriteLine($"Setting combo {e.RowIndex}/{e.ColumnIndex} to read/write");
-                    cell.ReadOnly = false;
-                }
 
                 if (cell.DataSource == null)
                 {
@@ -703,7 +506,7 @@ namespace ACT_RoR_Parcels
                     cell.DataSource = looterList[e.RowIndex].lootDates;
                     cell.ValueType = typeof(DateTime);
 
-                    int dates = looterList[e.RowIndex].DateCount();
+                    int dates = looterList[e.RowIndex].T1Count;
                     if (dates > 0)
                     {
                         cell.Value = looterList[e.RowIndex].lootDates[dates - 1];
@@ -711,9 +514,33 @@ namespace ACT_RoR_Parcels
                 }
                 else
                 {
-                    if (comboTime != null)
-                        if(looterList[e.RowIndex].DateCount() > comboTime.SelectedIndex)
+                    if (comboTime != null && isT1Combo)
+                        if (looterList[e.RowIndex].T1Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
                             cell.Value = looterList[e.RowIndex].lootDates[comboTime.SelectedIndex];
+                }
+            }
+            else if (e.ColumnIndex == dataGridView1.Columns["T2DateColumn"].Index && e.RowIndex >= 0 && e.RowIndex < looterList.Count)
+            {
+                // Cast the cell to a DataGridViewComboBoxCell
+                var cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+                if (cell.DataSource == null)
+                {
+                    // Set the DataSource of the ComboBox based on the current row's custom class instance
+                    cell.DataSource = looterList[e.RowIndex].T2LootDates;
+                    cell.ValueType = typeof(DateTime);
+
+                    int dates = looterList[e.RowIndex].T2Count;
+                    if (dates > 0)
+                    {
+                        cell.Value = looterList[e.RowIndex].T2LootDates[dates - 1];
+                    }
+                }
+                else
+                {
+                    if (comboTime != null && isT2Combo)
+                        if (looterList[e.RowIndex].T2Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
+                            cell.Value = looterList[e.RowIndex].T2LootDates[comboTime.SelectedIndex];
                 }
             }
         }
@@ -725,7 +552,11 @@ namespace ACT_RoR_Parcels
                 dataGridView1.Columns[e.ColumnIndex].Tag = SortOrder.Descending;
             else
                 dataGridView1.Columns[e.ColumnIndex].Tag = (SortOrder)dataGridView1.Columns[e.ColumnIndex].Tag == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-            LooterSorter looterSorter = new LooterSorter(colHdr, (SortOrder)dataGridView1.Columns[e.ColumnIndex].Tag);
+            LooterSorter looterSorter;
+            if(colHdr == "In Raid" && T2ZoneList.Find(x => ActGlobals.oFormActMain.CurrentZone.Contains(x)) != null)
+                looterSorter = new LooterSorter(colHdr + "2", (SortOrder)dataGridView1.Columns[e.ColumnIndex].Tag);
+            else
+                looterSorter = new LooterSorter(colHdr, (SortOrder)dataGridView1.Columns[e.ColumnIndex].Tag);
             looterList.Sort(looterSorter);
             lootersBindingSource.ResetBindings(false);
             dataGridView1.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = (SortOrder)dataGridView1.Columns[e.ColumnIndex].Tag;
@@ -733,12 +564,12 @@ namespace ACT_RoR_Parcels
 
         private void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
+            // add row number to the row headers
             var grid = sender as DataGridView;
             var rowIdx = (e.RowIndex + 1).ToString();
 
             var centerFormat = new StringFormat()
             {
-                // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Far,
                 LineAlignment = StringAlignment.Center
             };
@@ -760,16 +591,16 @@ namespace ACT_RoR_Parcels
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            //string data = File.ReadAllText(ActGlobals.oFormActMain.GameMacroFolder + @"\raid-parcel1.txt");
-            //string p = data.Replace(" r <Parcel P='", "").Replace("' />", "");
-            //UiParseXml(p);
+            List<string> data = File.ReadLines(ActGlobals.oFormActMain.GameMacroFolder + @"\raid-parcel1.txt").ToList();
+            string p = data[0].Replace(" r <Parcel P='", "").Replace("' />", "");
+            UiParseXml(p);
 
-            Task<FileInfo> ftask = Task.Run(() => { return GetRemoteFileAsync(); });
-            ftask.Wait();
-            if (ftask.Result != null)
-            {
-                Debug.WriteLine($"download ok: {ftask.Result.FullName}");
-            }
+            //Task<FileInfo> ftask = Task.Run(() => { return GetRemoteFileAsync(); });
+            //ftask.Wait();
+            //if (ftask.Result != null)
+            //{
+            //    Debug.WriteLine($"download ok: {ftask.Result.FullName}");
+            //}
 
         }
 

@@ -86,6 +86,9 @@
     <Compile Include="RoRParcel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="RoRParcel.Designer.cs">
+      <DependentUpon>RoRParcel.cs</DependentUpon>
+    </Compile>
     <Compile Include="SimpleMessageBox.cs">
       <SubType>Form</SubType>
     </Compile>

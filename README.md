@@ -1,14 +1,26 @@
 ﻿# Locked Parcel Plugin for Advanced Combat Tracker
 This plugin was written to help track looting and distribution of the [Locked Parcels](https://u.eq2wire.com/item/index/4266886992) in EQII Renewal of Ro raids.
 
-Each time someone loots a Locked Parcel, it is added to the plugin's list. The plugin tracks the number of times each player has looted one.
+Each time someone loots a Locked Parcel, it is added to the plugin's list. The plugin tracks the number of times each player has looted a Locked Parcel.
 
-Players that have never looted a Locked Parcel are added to the list via the `/whoraid` command in EQII. The plugin trys to keep track of raid members, but the best way to update the list is with `/whoraid`.
+The plugin currently tracks parcels from `The Boundless Gulf` (T2) separately from the first two raid zones `The Hunt` and `Standing Storm` (T1).
 
-The `[Pick Next]` button in the plugin sorts its list so that all of the players currently in the raid with the lowest count of looted Locked Parcels are at the top of the list. (i.e. it sorts by `InRaid`, then by `Count`, then by `Player`.) A message next to the `[Pick Next]` suggests a `/ran` EQII command to randomly select one of those raiders to recieve the next drop. An example is shown below where three players are in the raid and have never gotten a Locked Parcel, so they are at the top of the list:
+Players that have never looted a Locked Parcel are added to the list via the `/whoraid` command in EQII. The plugin trys to keep track of raid members, but the best way to update the player list is with `/whoraid`.
 
-![Pick Next](images/list.png)
+The `[Pick Next]` button in the plugin sorts its list so that all of the players currently in the raid with the lowest count of looted Locked Parcels are at the top of the list. (i.e. it sorts by `InRaid`, then by `Count`, then by `Player`.) If the current zone is `The Boundless Gulf`, the sort uses `T2 Count`. Otherwise, the sort uses the `T1 Count`. A message next to the `[Pick Next]` suggests a `/ran` EQII command to randomly select one of those raiders to recieve the next drop. An example is shown below where three players are in the raid and have never gotten a T1 Locked Parcel, so they are at the top of the list.
 
+![Pick Next T1](images/t1-random.png)
+
+The `[Pick Next]` button would result in the following sort if the current zone is `The Boundless Gulf`':
+
+![Pick Next T2](images/t2-random.png)
+
+# Loot Data Input
+The plugin currently only gathers loot data from log files or shares.
+
+The plugin can parse old log files when using ACT's `Import/Export` tab if the plugin's `Parse Imports` checkbox is checked.
+
+The only other way to manually input loot data is to edit the `RoR_Parcels_Config.xml` file in ACT's `Config` folder.
 
 # Sharing
 The player list can be shared with other plugin users via the `[Share]` button. There are two methods of sharing; macro and copy/paste. These are described in the following sections.
@@ -24,7 +36,7 @@ The entire list can be shared using the **[Macro]** button, as shown below:
 
 ![macro](images/macro-button.png)
 
-The plugin's **[Macro]** button generally takes fewer steps to share a note. Pressing the **[Macro]** button generates enough text files to share the entire player list. The text file names follow the format `raid-parcelX.txt` where `X` is a number starting with 1 and incrementing until enough files are created to share the entire list, e.g. the first 16,000 or so characters would be shared using the macro file `raid-parcel1.txt`.
+The plugin's **[Macro]** button generally takes fewer steps to share the list. Pressing the **[Macro]** button generates enough text files to share the entire player list. The text file names follow the format `raid-parcelX.txt` where `X` is a number starting with 1 and incrementing until enough files are created to share the entire list, e.g. the first 16,000 or so characters would be shared using the macro file `raid-parcel1.txt`.
 
 When the plugin finds an EQII game window, the share dialog initially opens with the list of macro commands.
 
@@ -56,7 +68,7 @@ In the example above, since a game window was found, the initial list contains t
 6. Repeat until all lines are pasted into game chat.
 7. Press **[Done]** to dismiss the dialog.
 
-Note that if a player has looted a lot of Locked Parcels (more than about 25), their name will show up more than once in the list. To transfer all of their data, each of the lines with their name must be copy/pasted.
+Note that if a player has looted a lot of Locked Parcels (more than about 20), their name will show up more than once in the list. To transfer all of their data, each of the lines with their name must be copy/pasted.
 
 # Installation
 

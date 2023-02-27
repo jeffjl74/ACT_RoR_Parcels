@@ -11,8 +11,7 @@ namespace ACT_RoR_Parcels
     public partial class XmlCopyForm : Form
     {
         const int maxChatLen = 240;
-        const int maxMacroLen = 1000;
-        //List<ListItem> chatSnippets;
+        const int maxMacroLen = 990;
         bool _loading = true;
         bool _preIncremet = false;
         bool _autoIncrementing = false;
@@ -37,6 +36,13 @@ namespace ACT_RoR_Parcels
             {
                 return description;
             }
+        }
+
+        internal class ShareTrack
+        {
+            public bool done = false;
+            public int playerIndex = 0;
+            public string data = "";
         }
 
         public XmlCopyForm(string prefix, List<Looter> looters)
@@ -97,86 +103,19 @@ namespace ACT_RoR_Parcels
             this.CenterToParent();
         }
 
-        private (string result, int index) BuildSharePlayer(Looter looter, int startAt)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<Parcel P=");
-            sb.Append($"{looter.Player}");
-            int i = startAt;
-            for (; i < looter.lootDates.Count && (sb.Length + 10) < maxChatLen; i++)
-            {
-                long unixTimeSeconds = new DateTimeOffset(looter.lootDates[i]).ToUnixTimeSeconds();
-                sb.Append($",{unixTimeSeconds}");
-            }
-            sb.Append(" />");
-            return (sb.ToString(), i);
-        }
-
-        private int BuildShareAll(string prefix)
-        {
-            fileCount = 0;
-            int lineCount = 0;
-            macroLines.Clear();
-            bool done = false;
-            do
-            {
-                (int looterIndx, int dateIndx) = BuildMacroLine(prefix, 0, 0);
-                if (looterIndx == _looters.Count && dateIndx == _looters[_looters.Count-1].lootDates.Count)
-                    done = true;
-                lineCount++;
-                if(lineCount == 16 || done)
-                {
-                    fileCount++;
-                    string filePath = string.Format(doFileName, fileCount);
-                    if (!ActGlobals.oFormActMain.SendToMacroFile(filePath, macroLines.ToString(), string.Empty))
-                    {
-                        SimpleMessageBox.Show(this, $"Write to macro file {fileCount} failed", "Macro Error");
-                    }
-                    macroLines.Clear();
-                    lineCount = 0;
-                }
-            } while (!done);
-
-            return fileCount;
-        }
-
-        private (int lootIdx, int dateIdx) BuildMacroLine(string prefix, int startLoot, int startDate)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{prefix}<Parcel P='");
-            int i = startLoot;
-            int j = startDate;
-            int dateIndex = j;
-            for (; i <_looters.Count && (sb.Length + 20) < maxMacroLen; i++)
-            {
-                sb.Append($"{_looters[i].Player}");
-                for (; j<_looters[i].lootDates.Count && (sb.Length + 10) < maxMacroLen; j++)
-                {
-                    long unixTimeSeconds = new DateTimeOffset(_looters[i].lootDates[j]).ToUnixTimeSeconds();
-                    sb.Append($",{unixTimeSeconds}");
-                }
-                if(i+1 < _looters.Count)
-                    sb.Append(":");
-                dateIndex = j;
-                j = 0;
-            }
-            macroLines.Append(sb.ToString() + "' />" + Environment.NewLine);
-            return (i, dateIndex);
-        }
-
         private void BuildPlayerList()
         {
             listBox1.Items.Clear();
-            foreach(Looter l in _looters)
+            foreach (Looter l in _looters)
             {
-                int startAt = 0;
+                ShareTrack st = new ShareTrack();
+                l.RestartIterator();
                 do
                 {
-                    (string data, int idx) = BuildSharePlayer(l, startAt);
-                    ListItem item = new ListItem { description = l.Player, data = data, type = ItemType.Player };
+                    st = BuildSharePlayer(l, st);
+                    ListItem item = new ListItem { description = l.Player, data = st.data, type = ItemType.Player };
                     listBox1.Items.Add(item);
-                    startAt = idx;
-                } while (startAt < l.lootDates.Count);
+                } while (!st.done);
             }
 
             if (listBox1.Items.Count > 0)
@@ -187,22 +126,158 @@ namespace ACT_RoR_Parcels
             else
                 toolStripStatusLabel1.Text = string.Empty;
 
-            //if (listBox1.Items.Count == 0)
-            //    buttonMacro.Enabled = false;
+        }
+
+        private ShareTrack BuildSharePlayer(Looter looter, ShareTrack shareTrack)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"<Parcel P='{looter.Player}");
+
+            int tier = -1;
+            int prevTier = -1;
+            DateTime time;
+            bool stillRoom = false;
+            do
+            {
+                (tier, time) = looter.GetNextTime();
+                long unixTimeSeconds = new DateTimeOffset(time).ToUnixTimeSeconds();
+                if (tier == 0)
+                {
+                    if (prevTier != -1)
+                        sb.Append(")");
+                    break;
+                }
+                if (tier != prevTier)
+                {
+                    if (prevTier == -1)
+                        sb.Append($",({tier}={unixTimeSeconds}");    // first one needs the comma
+                    else
+                        sb.Append($")({tier}={unixTimeSeconds}");    // close previous, open new
+                    prevTier = tier;
+                }
+                else
+                    sb.Append($",{unixTimeSeconds}");           // continue the list
+
+                stillRoom = (sb.Length + 15) < maxChatLen;
+
+            } while (tier > 0 && stillRoom);
+
+            if (!stillRoom)
+                sb.Append(")");
+
+            sb.Append("' />");
+            shareTrack.data = sb.ToString();
+            if(looter.IterationsDone())
+                shareTrack.done = true;
+            return shareTrack;
+        }
+
+        private void RestartAll()
+        {
+            foreach (Looter looter in _looters)
+                looter.RestartIterator();
+        }
+
+        private int BuildShareAll(string prefix)
+        {
+            fileCount = 0;
+            int lineCount = 0;
+            macroLines.Clear();
+            RestartAll();    
+            ShareTrack st = new ShareTrack();
+            do
+            {
+                st = BuildMacroLine(st);
+                lineCount++;
+                if(lineCount == 16 || st.done)
+                {
+                    fileCount++;
+                    string filePath = string.Format(doFileName, fileCount);
+                    if (!ActGlobals.oFormActMain.SendToMacroFile(filePath, macroLines.ToString(), string.Empty))
+                    {
+                        SimpleMessageBox.Show(this, $"Write to macro file {fileCount} failed", "Macro Error");
+                    }
+                    macroLines.Clear();
+                    lineCount = 0;
+                }
+            // not sure all corner cases have been tested
+            // prevent an infinite loop by limiting the number of files to an arbitrary 10
+            } while (!st.done && fileCount < 10);
+
+            return fileCount;
+        }
+
+        private ShareTrack BuildMacroLine(ShareTrack st)
+        {
+            StringBuilder sb = new StringBuilder();
+            string macroPrefix = _prefix.Replace("/", "").Trim();
+            sb.Append($"{macroPrefix} <Parcel P='");
+            bool stillRoom = (sb.Length + _looters[st.playerIndex].Player.Length + 20) < maxMacroLen;
+            for (; st.playerIndex < _looters.Count && stillRoom; st.playerIndex++)
+            {
+                Looter looter = _looters[st.playerIndex];
+                sb.Append($"{looter.Player}");
+                int tier = -1;
+                int prevTier = -1;
+                DateTime time;
+                do
+                {
+                    (tier, time) = looter.GetNextTime();
+                    long unixTimeSeconds = new DateTimeOffset(time).ToUnixTimeSeconds();
+                    if (tier == 0)
+                    {
+                        if (prevTier != -1)
+                            sb.Append(")");
+                        break;
+                    }
+                    if (tier != prevTier)
+                    {
+                        if(prevTier == -1)
+                            sb.Append($",({tier}={unixTimeSeconds}");    // first one needs the comma
+                        else
+                            sb.Append($")({tier}={unixTimeSeconds}");    // close previous, open new
+                        prevTier = tier;
+                    }
+                    else
+                        sb.Append($",{unixTimeSeconds}");           // continue the list
+
+                    stillRoom = (sb.Length + 15) < maxMacroLen;
+                } while (tier > 0 && stillRoom);
+
+                // if we quit because the line is getting long, close it and bail
+                if (!stillRoom)
+                {
+                    sb.Append(")");
+                    break;
+                }
+
+                // more players?
+                if(st.playerIndex + 1 < _looters.Count)
+                {
+                    stillRoom = (sb.Length + _looters[st.playerIndex+1].Player.Length + 20) < maxMacroLen;
+
+                    if (looter.IterationsDone())
+                        sb.Append(":");
+                }
+            }
+            macroLines.Append(sb.ToString() + "' />" + Environment.NewLine);
+            st.data = sb.ToString();
+            if (st.playerIndex == _looters.Count && _looters[_looters.Count-1].IterationsDone())
+                st.done = true;
+            return st;
         }
 
         private void buttonCopy_Click(object sender, EventArgs e)
         {
-            string prefix = string.Empty;
             if (radioButtonG.Checked)
-                prefix = "/g ";
+                _prefix = "/g ";
             else if (radioButtonR.Checked)
-                prefix = "/r ";
+                _prefix = "/r ";
             else if (!string.IsNullOrEmpty(textBoxCustom.Text))
             {
-                prefix = textBoxCustom.Text;
-                if (!prefix.EndsWith(" "))
-                    prefix = prefix + " ";
+                _prefix = textBoxCustom.Text;
+                if (!_prefix.EndsWith(" "))
+                    _prefix = _prefix + " ";
             }
 
             bool needLoad = true;
@@ -211,7 +286,7 @@ namespace ACT_RoR_Parcels
                 ListItem listItem = (ListItem)listBox1.Items[0];
                 if (listItem.type != ItemType.Command)
                 {
-                    NextListItem(prefix);
+                    NextListItem(_prefix);
                     needLoad = false;
                 }
             }
@@ -376,7 +451,6 @@ namespace ACT_RoR_Parcels
 
                 this.Text = String.Format("XML Share: {0} players", _looters.Count);
 
-                //int count = Macros.WriteCategoryMacroFile(prefix, _triggers, _categoryTimers, false);
                 int count = BuildShareAll(prefix);
                 listBox1.Items.Clear();
                 for (int i = 0; i < count; i++)

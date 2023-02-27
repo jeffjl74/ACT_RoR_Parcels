@@ -31,8 +31,13 @@ namespace ACT_RoR_Parcels
             {
                 case "Player":
                     return x.Player.CompareTo(y.Player);
-                case "Count":
-                    int first = x.Count.CompareTo(y.Count);
+                case "T1 Count":
+                case "T2 Count":
+                    int first;
+                    if(_field == "T1 Count")
+                        first = x.T1Count.CompareTo(y.T1Count);
+                    else
+                        first = x.T2Count.CompareTo(y.T2Count);
                     if (first == 0)
                     {
                         // secondary sort is by InRaid, always descending
@@ -54,9 +59,18 @@ namespace ACT_RoR_Parcels
                     }
                     else
                         return first;
-                case "Dates":
-                    List<DateTime> xList = x.lootDates;
-                    List<DateTime> yList = y.lootDates;
+                case "T1 Dates":
+                case "T2 Dates":
+                    List<DateTime> xList;
+                    if (_field == "T1 Dates")
+                        xList = x.lootDates;
+                    else
+                        xList = x.T2LootDates;
+                    List<DateTime> yList;
+                    if(_field == "T1 Dates")
+                        yList = y.lootDates;
+                    else
+                        yList = y.T2LootDates;
                     if (xList.Count == 0 && yList.Count > 0)
                         return 1;
                     else if (yList.Count == 0 && xList.Count > 0)
@@ -88,16 +102,38 @@ namespace ACT_RoR_Parcels
                         else
                             return first;
                     }
-                case "InRaid":
+                case "In Raid":
                     first = x.InRaid.CompareTo(y.InRaid);
                     if(first == 0)
                     {
-                        // secondary sort is Count, always ascending
+                        // secondary sort is T1 Count, always ascending
                         int second;
                         if (_order == SortOrder.Descending)
-                            second = y.Count.CompareTo(x.Count);
+                            second = y.T1Count.CompareTo(x.T1Count);
                         else
-                            second = x.Count.CompareTo(y.Count);
+                            second = x.T1Count.CompareTo(y.T1Count);
+                        if (second == 0)
+                        {
+                            // tertiary name sort is always ascending
+                            if (_order == SortOrder.Ascending)
+                                return x.Player.CompareTo(y.Player);
+                            else
+                                return y.Player.CompareTo(x.Player);
+                        }
+                        else
+                            return second;
+                    }
+                    return first;
+                case "In Raid2":
+                    first = x.InRaid.CompareTo(y.InRaid);
+                    if (first == 0)
+                    {
+                        // secondary sort is T2 Count, always ascending
+                        int second;
+                        if (_order == SortOrder.Descending)
+                            second = y.T2Count.CompareTo(x.T2Count);
+                        else
+                            second = x.T2Count.CompareTo(y.T2Count);
                         if (second == 0)
                         {
                             // tertiary name sort is always ascending
