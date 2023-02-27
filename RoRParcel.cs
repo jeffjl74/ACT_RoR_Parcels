@@ -449,10 +449,15 @@ namespace ACT_RoR_Parcels
                 if (looterList[0].InRaid == 1)
                 {
                     int lowest = looterList[0].T1Count;
+                    if (sortFor == "T2")
+                        lowest = looterList[0].T2Count;
                     int i = 1;
                     for (; i < looterList.Count; i++)
                     {
-                        if (looterList[i].T1Count > lowest || looterList[i].InRaid < 1)
+                        int count = looterList[i].T1Count;
+                        if (sortFor == "T2")
+                            count = looterList[i].T2Count;
+                        if (count > lowest || looterList[i].InRaid < 1)
                             break;
                     }
                     labelInstructions.Text = $"/ran {i} to choose the next {sortFor} looter.";
