@@ -17,7 +17,7 @@ using System.Linq;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyVersion("1.2.1.0")]
 
 namespace ACT_RoR_Parcels
 {
