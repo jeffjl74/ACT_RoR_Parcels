@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ACT_.RoR_Parcels</RootNamespace>
+    <RootNamespace>ACT_RoR_Parcels</RootNamespace>
     <AssemblyName>Parcels</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -80,6 +80,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddLoot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddLoot.Designer.cs">
+      <DependentUpon>AddLoot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteLoot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeleteLoot.Designer.cs">
+      <DependentUpon>DeleteLoot.cs</DependentUpon>
+    </Compile>
     <Compile Include="Looter.cs" />
     <Compile Include="LooterList.cs" />
     <Compile Include="LooterSorter.cs" />
@@ -103,6 +115,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AddLoot.resx">
+      <DependentUpon>AddLoot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeleteLoot.resx">
+      <DependentUpon>DeleteLoot.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RoRParcel.resx">
       <DependentUpon>RoRParcel.cs</DependentUpon>
     </EmbeddedResource>

@@ -16,11 +16,11 @@ The `[Pick Next]` button would result in the following sort if the current zone 
 ![Pick Next T2](images/t2-random.png)
 
 # Loot Data Input
-The plugin currently only gathers loot data from log files or shares.
+The plugin automatically gathers loot data from log files or shares.
 
 The plugin can parse old log files when using ACT's `Import/Export` tab if the plugin's `Parse Imports` checkbox is checked.
 
-The only other way to manually input loot data is to edit the `RoR_Parcels_Config.xml` file in ACT's `Config` folder.
+To manually modify loot data, right click one of the `Count` columns and choose the appropriate menu. The counts are generated from the list of loot dates, so modifying the counts is accomplised by adding or removing dates.
 
 # Sharing
 The player list can be shared with other plugin users via the `[Share]` button. There are two methods of sharing; macro and copy/paste. These are described in the following sections.

@@ -17,7 +17,7 @@ using System.Linq;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
 
 namespace ACT_RoR_Parcels
 {
@@ -59,6 +59,10 @@ namespace ACT_RoR_Parcels
         // UI thread support
         WindowsFormsSynchronizationContext mUiContext = new WindowsFormsSynchronizationContext();
         bool importChecked;
+
+        // context menu
+        int contextRow = -1;
+        int contextCol = -1;
 
         public RoRParcel()
 		{
@@ -612,6 +616,36 @@ namespace ACT_RoR_Parcels
         private void buttonHelp_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/jeffjl74/ACT_RoR_Parcels#Locked-Parcel-Plugin-for-Advanced-Combat-Tracker");
+        }
+
+        private void dataGridView1_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                if(dataGridView1.Columns[e.ColumnIndex].Name.Contains("Count"))
+                {
+                    Debug.WriteLine($"{looterList[e.RowIndex].Player} at {e.RowIndex},{e.ColumnIndex}");
+                    e.ContextMenuStrip = contextMenuStrip1;
+                    contextRow = e.RowIndex;
+                    contextCol = e.ColumnIndex;
+                }
+            }
+        }
+
+        private void addLootToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddLoot addLoot = new AddLoot(looterList[contextRow], contextCol);
+            addLoot.ShowDialog(ActGlobals.oFormActMain);
+            if(addLoot.dataChanged)
+                UiUpdateGrid(null);
+        }
+
+        private void deleteLootToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteLoot deleteLoot = new DeleteLoot(looterList[contextRow], contextCol);
+            deleteLoot.ShowDialog(ActGlobals.oFormActMain);
+            if(deleteLoot.dataChanged)
+                UiUpdateGrid(null);
         }
     }
 }
