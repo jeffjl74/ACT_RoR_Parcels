@@ -647,5 +647,16 @@ namespace ACT_RoR_Parcels
             if(deleteLoot.dataChanged)
                 UiUpdateGrid(null);
         }
+
+        private void dataGridView1_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && looterList.Count > 0)
+            {
+                if (dataGridView1.Columns[e.ColumnIndex].Name.Contains("Count"))
+                {
+                    e.ToolTipText = "Right-click to modify";
+                }
+            }
+        }
     }
 }

@@ -36,12 +36,14 @@ namespace ACT_RoR_Parcels
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InRaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.T1Count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.T2Count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.T2DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.lootersBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.buttonNext = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -53,15 +55,13 @@ namespace ACT_RoR_Parcels
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addLootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.deleteLootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -86,10 +86,20 @@ namespace ACT_RoR_Parcels
             this.dataGridView1.CellContextMenuStripNeeded += new System.Windows.Forms.DataGridViewCellContextMenuStripNeededEventHandler(this.dataGridView1_CellContextMenuStripNeeded);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+            this.dataGridView1.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.dataGridView1_CellToolTipTextNeeded);
             this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView1_DataError);
             this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
+            // 
+            // playerDataGridViewTextBoxColumn
+            // 
+            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
+            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
+            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
+            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
+            this.playerDataGridViewTextBoxColumn.Width = 61;
             // 
             // InRaid
             // 
@@ -142,6 +152,10 @@ namespace ACT_RoR_Parcels
             // 
             this.lootersBindingSource.DataMember = "Looters";
             this.lootersBindingSource.DataSource = this.looterListBindingSource;
+            // 
+            // looterListBindingSource
+            // 
+            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
             // 
             // buttonNext
             // 
@@ -242,32 +256,19 @@ namespace ACT_RoR_Parcels
             this.addLootToolStripMenuItem,
             this.deleteLootToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(144, 48);
             // 
             // addLootToolStripMenuItem
             // 
             this.addLootToolStripMenuItem.Name = "addLootToolStripMenuItem";
-            this.addLootToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addLootToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.addLootToolStripMenuItem.Text = "Add Loot...";
             this.addLootToolStripMenuItem.Click += new System.EventHandler(this.addLootToolStripMenuItem_Click);
-            // 
-            // playerDataGridViewTextBoxColumn
-            // 
-            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
-            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
-            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
-            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
-            this.playerDataGridViewTextBoxColumn.Width = 61;
-            // 
-            // looterListBindingSource
-            // 
-            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
             // 
             // deleteLootToolStripMenuItem
             // 
             this.deleteLootToolStripMenuItem.Name = "deleteLootToolStripMenuItem";
-            this.deleteLootToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteLootToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.deleteLootToolStripMenuItem.Text = "Delete Loot...";
             this.deleteLootToolStripMenuItem.Click += new System.EventHandler(this.deleteLootToolStripMenuItem_Click);
             // 
@@ -281,11 +282,11 @@ namespace ACT_RoR_Parcels
             this.Size = new System.Drawing.Size(686, 384);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
