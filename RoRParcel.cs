@@ -17,7 +17,7 @@ using System.Linq;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyVersion("1.4.0.0")]
 
 namespace ACT_RoR_Parcels
 {
@@ -629,6 +629,13 @@ namespace ACT_RoR_Parcels
                     contextRow = e.RowIndex;
                     contextCol = e.ColumnIndex;
                 }
+                else if (dataGridView1.Columns[e.ColumnIndex].Name == "InRaid")
+                {
+                    Debug.WriteLine($"{looterList[e.RowIndex].Player} at {e.RowIndex},{e.ColumnIndex}");
+                    e.ContextMenuStrip = contextMenuStrip2;
+                    contextRow = e.RowIndex;
+                    contextCol = e.ColumnIndex;
+                }
             }
         }
 
@@ -653,10 +660,20 @@ namespace ACT_RoR_Parcels
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && looterList.Count > 0)
             {
                 if (dataGridView1.Columns[e.ColumnIndex].Name.Contains("Count"))
-                {
                     e.ToolTipText = "Right-click to modify";
-                }
+                else if (dataGridView1.Columns[e.ColumnIndex].Name == "InRaid")
+                    e.ToolTipText = "Right-click to toggle";
             }
+        }
+
+        private void toggleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // if in-raid, remove from raid
+            if (looterList[contextRow].InRaid == 1)
+                looterList[contextRow].InRaid = 0;
+            else // otherwise set to in-raid
+                looterList[contextRow].InRaid = 1;
+            UiUpdateGrid(null);
         }
     }
 }
