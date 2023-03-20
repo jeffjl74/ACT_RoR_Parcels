@@ -7,6 +7,8 @@ The plugin currently tracks parcels from `The Boundless Gulf` (T2) separately fr
 
 Players that have never looted a Locked Parcel are added to the list via the `/whoraid` command in EQII. The plugin trys to keep track of raid members, but the best way to update the player list is with `/whoraid`.
 
+To manually temporarily adjust a player's `In Raid` status, for instance for a player that is on sit but eligible for a parcel, right-click the appropriate `In Raid` cell to toggle their state. The manual setting will be overwritten if they actually join or leave the raid, or if a `/whoraid` command is used.
+
 The `[Pick Next]` button in the plugin sorts its list so that all of the players currently in the raid with the lowest count of looted Locked Parcels are at the top of the list. (i.e. it sorts by `InRaid`, then by `Count`, then by `Player`.) If the current zone is `The Boundless Gulf`, the sort uses `T2 Count`. Otherwise, the sort uses the `T1 Count`. A message next to the `[Pick Next]` suggests a `/ran` EQII command to randomly select one of those raiders to recieve the next drop. An example is shown below where three players are in the raid and have never gotten a T1 Locked Parcel, so they are at the top of the list.
 
 ![Pick Next T1](images/t1-random.png)
@@ -14,6 +16,13 @@ The `[Pick Next]` button in the plugin sorts its list so that all of the players
 The `[Pick Next]` button would result in the following sort if the current zone is `The Boundless Gulf`':
 
 ![Pick Next T2](images/t2-random.png)
+
+# Version 1.4 Changes
+* Right-click the `In Raid` cell to toggle a player's status.
+* Fix sharing across time zones. Loot times are now stored in universal time rather than local time. In previous versions, mixing local times from the log file with local times shared from a user in another time zone resulted in duplicate counts. 
+	* This version will convert the times stored by previous versions. This conversion is benign for times received from the log file (their local time was correct). The new time will be incorrect for times shared from another player in another time zone (their local time was for a different time zone).
+	* If any user(s) had received any shared data from a different time zone, the easiest way to fix any future sharing is to start with a clean list, as described below:
+     	* Have everone update the plugin, then designate one person as the "master" list. All users other than the "master" should delete their entire list (select all rows and press the `Delete` key). Then have the "master" share their entire list. 
 
 # Loot Data Input
 The plugin automatically gathers loot data from log files or shares.
@@ -23,7 +32,9 @@ The plugin can parse old log files when using ACT's `Import/Export` tab if the p
 To manually modify loot data, right click one of the `Count` columns and choose the appropriate menu. The counts are generated from the list of loot dates, so modifying the counts is accomplised by adding or removing dates.
 
 # Sharing
-The player list can be shared with other plugin users via the `[Share]` button. There are two methods of sharing; macro and copy/paste. These are described in the following sections.
+The player list can be shared with other plugin users via the `[Share]` button.
+
+There are two methods of sharing; macro and copy/paste. These are described in the following sections.
 
 When the __Game Window:__ is not blank, pressing the __[Macro]__ or __[Copy]__ button activates the selected game window. Once the game window is activated, the chat box can be activated by pressing the `Enter` key. (`Enter` is the default key binding. Use whatever key is set in _Options->Controls->Chat Keys->Begin Chat_.) The user can then press `Ctrl-v` to paste and `Enter` to complete the command.
 

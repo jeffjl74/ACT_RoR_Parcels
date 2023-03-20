@@ -228,6 +228,7 @@ namespace ACT_RoR_Parcels
             {
 				looterList = new List<Looter>();
             }
+            OneTimeConvertToUTC();
             lootersBindingSource.DataSource = looterList;
             lootersBindingSource.ResetBindings(false);
         }
@@ -241,12 +242,58 @@ namespace ACT_RoR_Parcels
 			}
 		}
 
-		public static DateTime UnixSecondsToDateTime(long unixSeconds)
+        private void OneTimeConvertToUTC()
+        {
+            // the first time plugin version 1.4 runs
+            // we need to convert all the loot times stored by ealier versions
+            // from local time to zulu time
+            bool dateChecked = false;
+            bool converting = false;
+            foreach (Looter looter in looterList)
+            {
+                looter.RestartIterator();
+                List<DateTime> dates1 = new List<DateTime>();
+                List<DateTime> dates2 = new List<DateTime>();
+                int tier = -1;
+                DateTime time;
+                do
+                {
+                    (tier, time) = looter.GetNextTime();
+                    if (tier == 0)
+                        break;
+                    if (time.Kind == DateTimeKind.Local)
+                        converting = true;
+                    dateChecked = true;
+                    if (converting)
+                    {
+                        DateTime utc = time.ToUniversalTime();
+                        if (tier == 1)
+                            dates1.Add(utc);
+                        else
+                            dates2.Add(utc);
+                    }
+                } while (tier > 0);
+                if (converting)
+                {
+                    looter.lootDates = dates1;
+                    looter.T2LootDates = dates2;
+                }
+                else
+                {
+                    // have not seen a date that needs converting
+                    if (dateChecked)
+                        return; // stored date is already zulu, we are done
+                }
+            }
+            SaveSettings();
+        }
+
+        public static DateTime UnixSecondsToDateTime(long unixSeconds, DateTimeKind inputKind)
 		{
 			// Unix timestamp is seconds past epoch (1970-01-01T00:00:00Z)
-			DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, inputKind);
 			DateTime unixTime = epoch.AddSeconds(unixSeconds);
-			return unixTime.ToLocalTime();
+			return unixTime;
 		}
 
         private void OFormActMain_XmlSnippetAdded(object sender, XmlSnippetEventArgs e)
@@ -303,7 +350,7 @@ namespace ACT_RoR_Parcels
                                         Int64 t;
                                         if (Int64.TryParse(rest, out t))
                                         {
-                                            DateTime logTime = UnixSecondsToDateTime(t);
+                                            DateTime logTime = UnixSecondsToDateTime(t, DateTimeKind.Utc);
                                             looter.AddTime(tier, logTime);
                                         }
                                     }
@@ -314,7 +361,7 @@ namespace ACT_RoR_Parcels
                                 Int64 t;
                                 if (Int64.TryParse(param, out t))
                                 {
-                                    DateTime logTime = UnixSecondsToDateTime(t);
+                                    DateTime logTime = UnixSecondsToDateTime(t, DateTimeKind.Utc);
                                     looter.AddTime(tier, logTime);
                                 }
                             }
@@ -346,7 +393,8 @@ namespace ACT_RoR_Parcels
                         tier = 1;
                     else if (T2ZoneList.Contains(where))
                         tier = 2;
-                    DateTime logTime = UnixSecondsToDateTime(secs);
+                    //DateTime logTime = UnixSecondsToDateTime(secs, DateTimeKind.Local);
+                    DateTime logTime = logInfo.detectedTime.ToUniversalTime();
 					Looter looter = looterList.Find(x => x.Player == who);
 					if (looter == null)
                     {
@@ -476,8 +524,8 @@ namespace ACT_RoR_Parcels
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            // don't know why this happens after a combobox change. the cell contains a DateTime
-            Debug.WriteLine("Data Error: " + e.Exception.Message);
+            // don't know why this happens after a combobox change
+            Debug.WriteLine($"Data Error: {e.RowIndex},{e.ColumnIndex} {e.Exception.Message}");
             e.Cancel = true;
         }
 
@@ -493,8 +541,18 @@ namespace ACT_RoR_Parcels
 
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            // want to get the chosen index later
+            // we will want to get the chosen index later if this is a combobox
 			comboTime = e.Control as ComboBox;
+            if(comboTime != null)
+            {
+                // change the contents from UTC to local time
+                List<DateTime> localTimes = new List<DateTime>();
+                foreach(DateTime dt in comboTime.Items)
+                {
+                    localTimes.Add(dt.ToLocalTime());
+                }
+                comboTime.DataSource = localTimes;
+            }
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -504,7 +562,10 @@ namespace ACT_RoR_Parcels
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.ColumnIndex == dataGridView1.Columns["DateColumn"].Index && e.RowIndex >= 0 && e.RowIndex < looterList.Count)
+            if (e.RowIndex < 0 || e.ColumnIndex < 0 || e.RowIndex >= looterList.Count)
+                return;
+
+            if (e.ColumnIndex == dataGridView1.Columns["DateColumn"].Index)
             {
                 // Cast the cell to a DataGridViewComboBoxCell
                 var cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -514,21 +575,20 @@ namespace ACT_RoR_Parcels
                     // Set the DataSource of the ComboBox based on the current row's custom class instance
                     cell.DataSource = looterList[e.RowIndex].lootDates;
                     cell.ValueType = typeof(DateTime);
-
-                    int dates = looterList[e.RowIndex].T1Count;
-                    if (dates > 0)
-                    {
-                        cell.Value = looterList[e.RowIndex].lootDates[dates - 1];
-                    }
+                }
+                if (comboTime != null && isT1Combo)
+                {
+                    if (looterList[e.RowIndex].T1Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
+                        e.Value = looterList[e.RowIndex].lootDates[comboTime.SelectedIndex].ToLocalTime();
                 }
                 else
                 {
-                    if (comboTime != null && isT1Combo)
-                        if (looterList[e.RowIndex].T1Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
-                            cell.Value = looterList[e.RowIndex].lootDates[comboTime.SelectedIndex];
+                    int dates = looterList[e.RowIndex].T1Count;
+                    if (dates > 0)
+                        e.Value = looterList[e.RowIndex].lootDates[dates - 1].ToLocalTime();
                 }
             }
-            else if (e.ColumnIndex == dataGridView1.Columns["T2DateColumn"].Index && e.RowIndex >= 0 && e.RowIndex < looterList.Count)
+            else if (e.ColumnIndex == dataGridView1.Columns["T2DateColumn"].Index)
             {
                 // Cast the cell to a DataGridViewComboBoxCell
                 var cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -538,18 +598,17 @@ namespace ACT_RoR_Parcels
                     // Set the DataSource of the ComboBox based on the current row's custom class instance
                     cell.DataSource = looterList[e.RowIndex].T2LootDates;
                     cell.ValueType = typeof(DateTime);
-
-                    int dates = looterList[e.RowIndex].T2Count;
-                    if (dates > 0)
-                    {
-                        cell.Value = looterList[e.RowIndex].T2LootDates[dates - 1];
-                    }
                 }
+                if (comboTime != null && isT2Combo)
+                {
+                    if (looterList[e.RowIndex].T2Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
+{                        e.Value = looterList[e.RowIndex].T2LootDates[comboTime.SelectedIndex].ToLocalTime();
+}               }
                 else
                 {
-                    if (comboTime != null && isT2Combo)
-                        if (looterList[e.RowIndex].T2Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
-                            cell.Value = looterList[e.RowIndex].T2LootDates[comboTime.SelectedIndex];
+                    int dates = looterList[e.RowIndex].T2Count;
+                    if (dates > 0)
+                        e.Value = looterList[e.RowIndex].T2LootDates[dates - 1].ToLocalTime();
                 }
             }
         }

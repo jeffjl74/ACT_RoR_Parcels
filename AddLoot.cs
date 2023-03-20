@@ -50,11 +50,11 @@ namespace ACT_RoR_Parcels
             }
             if(list != null)
             {
-                if (list.Contains(dateTimePicker1.Value))
+                if (list.Contains(dateTimePicker1.Value.ToUniversalTime()))
                     SimpleMessageBox.Show(this, "Each timestamp must be unique", "Not added", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                 {
-                    list.Add(dateTimePicker1.Value);
+                    list.Add(dateTimePicker1.Value.ToUniversalTime());
                     dataChanged = true;
                 }
             }

@@ -86,5 +86,27 @@ namespace ACT_RoR_Parcels
             }
             return added;
         }
+
+        public bool DeleteTime(int tier, DateTime time)
+        {
+            bool removed = false;
+            if (tier == 1)
+            {
+                if (lootDates.Contains(time))
+                {
+                    lootDates.Remove(time);
+                    removed = true;
+                }
+            }
+            else if (tier == 2)
+            {
+                if (T2LootDates.Contains(time))
+                {
+                    T2LootDates.Remove(time);
+                    removed = true;
+                }
+            }
+            return removed;
+        }
     }
 }

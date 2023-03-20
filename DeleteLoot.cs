@@ -38,50 +38,27 @@ namespace ACT_RoR_Parcels
         private void DeleteLoot_Load(object sender, EventArgs e)
         {
             labelHeader.Text = $"T{_col/2} loot dates for {_looter.Player}:";
-            switch(_col)
-            {
-                case 2:
-                    LoadT1();
-                    break;
-                case 4:
-                    LoadT2();
-                    break;
-            }
-        }
 
-        private void LoadT1()
-        {
-            foreach(DateTime t in _looter.lootDates)
+            int tier;
+            DateTime time;
+            _looter.RestartIterator();
+            do
             {
-                listBox1.Items.Add(t);
-            }
-        }
-
-        private void LoadT2()
-        {
-            foreach (DateTime t in _looter.T2LootDates)
-            {
-                listBox1.Items.Add(t);
-            }
+                (tier, time) = _looter.GetNextTime();
+                if (tier == _col / 2)
+                    listBox1.Items.Add(time.ToLocalTime());
+            } while (tier != 0);
         }
 
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-            DateTime t = (DateTime)listBox1.SelectedItem;
-            if(t != null)
+            if(listBox1.SelectedItem != null)
             {
-                switch(_col)
+                DateTime t = (DateTime)listBox1.SelectedItem;
+                if (_looter.DeleteTime(_col / 2, t.ToUniversalTime()))
                 {
-                    case 2:
-                        _looter.lootDates.Remove(t);
-                        listBox1.Items.Remove(t);
-                        dataChanged = true;
-                        break;
-                    case 4:
-                        _looter.T2LootDates.Remove(t);
-                        listBox1.Items.Remove(t);
-                        dataChanged = true;
-                        break;
+                    listBox1.Items.Remove(t);
+                    dataChanged = true;
                 }
             }
         }
