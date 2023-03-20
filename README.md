@@ -22,7 +22,7 @@ The `[Pick Next]` button would result in the following sort if the current zone 
 * Fix sharing across time zones. Loot times are now stored in universal time rather than local time. In previous versions, mixing local times from the log file with local times shared from a user in another time zone resulted in duplicate counts. 
 	* This version will convert the times stored by previous versions. This conversion is benign for times received from the log file (their local time was correct). The new time will be incorrect for times shared from another player in another time zone (their local time was for a different time zone).
 	* If any user(s) had received any shared data from a different time zone, the easiest way to fix any future sharing is to start with a clean list, as described below:
-     	* Have everone update the plugin, then designate one person as the "master" list. All users other than the "master" should delete their entire list (select all rows and press the `Delete` key). Then have the "master" share their entire list. 
+     	* Have everyone update the plugin, then designate one person as the "master" list. All users other than the "master" should delete their entire list (select all rows and press the `Delete` key). Then have the "master" share their entire list. 
 
 # Loot Data Input
 The plugin automatically gathers loot data from log files or shares.
