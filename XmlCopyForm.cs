@@ -474,6 +474,7 @@ namespace ACT_RoR_Parcels
             {
                 if (radioButtonG.Checked)
                 {
+                    _prefix = "/g";
                     if (listBox1.Items.Count > 0)
                     {
                         ListItem listItem = (ListItem)listBox1.Items[0];
@@ -494,6 +495,7 @@ namespace ACT_RoR_Parcels
             {
                 if (radioButtonR.Checked)
                 {
+                    _prefix = "/r";
                     if (listBox1.Items.Count > 0)
                     {
                         ListItem listItem = (ListItem)listBox1.Items[0];
