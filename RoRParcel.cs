@@ -602,8 +602,8 @@ namespace ACT_RoR_Parcels
                 if (comboTime != null && isT2Combo)
                 {
                     if (looterList[e.RowIndex].T2Count > comboTime.SelectedIndex && comboTime.SelectedIndex >= 0)
-{                        e.Value = looterList[e.RowIndex].T2LootDates[comboTime.SelectedIndex].ToLocalTime();
-}               }
+                        e.Value = looterList[e.RowIndex].T2LootDates[comboTime.SelectedIndex].ToLocalTime();
+                }
                 else
                 {
                     int dates = looterList[e.RowIndex].T2Count;
