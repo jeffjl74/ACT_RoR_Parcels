@@ -32,7 +32,7 @@ The plugin can be set up such that a player and their alts are all treated as a 
 
 ![Alts](images/player-alts.png)
 
-In the example above, _Player7_ has been double-clicked in the _Raiders_ list to add it to _Player2's_ alts. Presing the __[Link]__ button will record _Player2_ and _Player7_ to be the same looter. (_Player2_ will also show up in _Player7's_ alts.) From that point on, when either _Player2_ or _Player7_ loots a chest, both player's counts will increment. 
+In the example above, _Player7_ has been double-clicked in the _Raiders_ list to add it to _Player2's_ alts. Presing the __[Link]__ button will record _Player2_ and _Player7_ to be the same looter. (_Player2_ would then also show up in _Player7's_ alts.) From that point on, when either _Player2_ or _Player7_ loots a chest, both player's counts will increment. 
 
 The radio buttons in the _Link Alts_ section determine how existing loot counts are handled when the __[Link]__ button is pressed.
 * _Add Loot Counts_: The loot dates for all players in the list are concatenated so that all players end up with the sum of looted items in each _Count_ column. For example, if _Player2_ had a _T1 Count_ of 1 and _Player7_ had a _T1 Count_ of 2, both players would end up with a _T1 Count_ of 3 (if all 3 loot dates are different).
