@@ -95,6 +95,12 @@
     <Compile Include="Looter.cs" />
     <Compile Include="LooterList.cs" />
     <Compile Include="LooterSorter.cs" />
+    <Compile Include="ManageAlts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageAlts.Designer.cs">
+      <DependentUpon>ManageAlts.cs</DependentUpon>
+    </Compile>
     <Compile Include="RoRParcel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,6 +126,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DeleteLoot.resx">
       <DependentUpon>DeleteLoot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageAlts.resx">
+      <DependentUpon>ManageAlts.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RoRParcel.resx">
       <DependentUpon>RoRParcel.cs</DependentUpon>

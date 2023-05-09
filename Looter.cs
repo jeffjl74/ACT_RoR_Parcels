@@ -16,6 +16,8 @@ namespace ACT_RoR_Parcels
         public int T1Count { get { return lootDates.Count; }  }
         public int T2Count { get { return T2LootDates.Count; }  }
 
+        public List<string> Alts { get; set; } = new List<string>();
+
         public List<DateTime> lootDates { get; set; } = new List<DateTime>();
 
         public List<DateTime> T2LootDates { get; set; } = new List<DateTime>();

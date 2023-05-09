@@ -17,7 +17,7 @@ using System.Linq;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyVersion("1.5.0.0")]
 
 namespace ACT_RoR_Parcels
 {
@@ -337,9 +337,9 @@ namespace ACT_RoR_Parcels
                                     looterList.Add(looter);
                                 }
                             }
-                            else if((i == 1 && j == 0) || (i == 0 && j > 0))
+                            else 
                             {
-                                // time slot with tier
+                                // ck for time slot with tier
                                 int eq = param.IndexOf('=');
                                 if(eq >= 0)
                                 {
@@ -355,14 +355,24 @@ namespace ACT_RoR_Parcels
                                         }
                                     }
                                 }
-                            }
-                            else if (looter != null)
-                            {
-                                Int64 t;
-                                if (Int64.TryParse(param, out t))
+                                else if (looter != null)
                                 {
-                                    DateTime logTime = UnixSecondsToDateTime(t, DateTimeKind.Utc);
-                                    looter.AddTime(tier, logTime);
+                                    if (char.IsLetter(param[0]))
+                                    {
+                                        // name of an alt
+                                        if(!looter.Alts.Contains(param))
+                                            looter.Alts.Add(param);
+                                    }
+                                    else 
+                                    {
+                                        // timestamp array member
+                                        Int64 t;
+                                        if (Int64.TryParse(param, out t))
+                                        {
+                                            DateTime logTime = UnixSecondsToDateTime(t, DateTimeKind.Utc);
+                                            looter.AddTime(tier, logTime);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -393,7 +403,6 @@ namespace ACT_RoR_Parcels
                         tier = 1;
                     else if (T2ZoneList.Contains(where))
                         tier = 2;
-                    //DateTime logTime = UnixSecondsToDateTime(secs, DateTimeKind.Local);
                     DateTime logTime = logInfo.detectedTime.ToUniversalTime();
 					Looter looter = looterList.Find(x => x.Player == who);
 					if (looter == null)
@@ -411,8 +420,18 @@ namespace ACT_RoR_Parcels
                     else
                     {
                         looter.InRaid = 1;
-                        if(looter.AddTime(tier, logTime))
+                        if (looter.AddTime(tier, logTime))
+                        {
+                            // copy to alts
+                            foreach (string altName in looter.Alts)
+                            {
+                                Looter alt = looterList.Find(x => x.Player == altName);
+                                if (alt != null)
+                                    alt.AddTime(tier, logTime);
+                            }
+
                             mUiContext.Post(UiUpdateGrid, null);
+                        }
                     }
                 }
                 else if((match = regexJoined.Match(logInfo.logLine)).Success)
@@ -659,17 +678,11 @@ namespace ACT_RoR_Parcels
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            List<string> data = File.ReadLines(ActGlobals.oFormActMain.GameMacroFolder + @"\raid-parcel1.txt").ToList();
-            string p = data[0].Replace(" r <Parcel P='", "").Replace("' />", "");
-            UiParseXml(p);
+            //List<string> data = File.ReadLines(ActGlobals.oFormActMain.GameMacroFolder + @"\raid-parcel1.txt").ToList();
+            //string p = data[0].Replace(" r <Parcel P='", "").Replace("' />", "");
+            //UiParseXml(p);
 
-            //Task<FileInfo> ftask = Task.Run(() => { return GetRemoteFileAsync(); });
-            //ftask.Wait();
-            //if (ftask.Result != null)
-            //{
-            //    Debug.WriteLine($"download ok: {ftask.Result.FullName}");
-            //}
-
+            Debug.WriteLine($"{looterList.Count}");
         }
 
         private void buttonHelp_Click(object sender, EventArgs e)
@@ -683,15 +696,19 @@ namespace ACT_RoR_Parcels
             {
                 if(dataGridView1.Columns[e.ColumnIndex].Name.Contains("Count"))
                 {
-                    Debug.WriteLine($"{looterList[e.RowIndex].Player} at {e.RowIndex},{e.ColumnIndex}");
-                    e.ContextMenuStrip = contextMenuStrip1;
+                    e.ContextMenuStrip = contextMenuStripLoot;
                     contextRow = e.RowIndex;
                     contextCol = e.ColumnIndex;
                 }
                 else if (dataGridView1.Columns[e.ColumnIndex].Name == "InRaid")
                 {
-                    Debug.WriteLine($"{looterList[e.RowIndex].Player} at {e.RowIndex},{e.ColumnIndex}");
-                    e.ContextMenuStrip = contextMenuStrip2;
+                    e.ContextMenuStrip = contextMenuStripInRaid;
+                    contextRow = e.RowIndex;
+                    contextCol = e.ColumnIndex;
+                }
+                else if (dataGridView1.Columns[e.ColumnIndex].Name == "Player")
+                {
+                    e.ContextMenuStrip = contextMenuStripAlts;
                     contextRow = e.RowIndex;
                     contextCol = e.ColumnIndex;
                 }
@@ -733,6 +750,14 @@ namespace ACT_RoR_Parcels
             else // otherwise set to in-raid
                 looterList[contextRow].InRaid = 1;
             UiUpdateGrid(null);
+        }
+
+        private void manageAltsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageAlts alts = new ManageAlts(looterList[contextRow], looterList);
+            alts.ShowDialog(ActGlobals.oFormActMain);
+            if (alts.dataChanged)
+                UiUpdateGrid(null);
         }
     }
 }

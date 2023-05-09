@@ -36,14 +36,12 @@ namespace ACT_RoR_Parcels
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.playerDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InRaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.T1Count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.T2Count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.T2DateColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.lootersBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.buttonNext = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -53,18 +51,23 @@ namespace ACT_RoR_Parcels
             this.labelInstructions = new System.Windows.Forms.Label();
             this.checkBoxImport = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripLoot = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addLootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteLootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripInRaid = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripAlts = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.manageAltsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Player = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.looterListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
-            this.contextMenuStrip2.SuspendLayout();
+            this.contextMenuStripLoot.SuspendLayout();
+            this.contextMenuStripInRaid.SuspendLayout();
+            this.contextMenuStripAlts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -73,7 +76,7 @@ namespace ACT_RoR_Parcels
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.playerDataGridViewTextBoxColumn,
+            this.Player,
             this.InRaid,
             this.T1Count,
             this.DateColumn,
@@ -94,15 +97,6 @@ namespace ACT_RoR_Parcels
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView1_DataError);
             this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
-            // 
-            // playerDataGridViewTextBoxColumn
-            // 
-            this.playerDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.playerDataGridViewTextBoxColumn.DataPropertyName = "Player";
-            this.playerDataGridViewTextBoxColumn.HeaderText = "Player";
-            this.playerDataGridViewTextBoxColumn.Name = "playerDataGridViewTextBoxColumn";
-            this.playerDataGridViewTextBoxColumn.ReadOnly = true;
-            this.playerDataGridViewTextBoxColumn.Width = 61;
             // 
             // InRaid
             // 
@@ -155,10 +149,6 @@ namespace ACT_RoR_Parcels
             // 
             this.lootersBindingSource.DataMember = "Looters";
             this.lootersBindingSource.DataSource = this.looterListBindingSource;
-            // 
-            // looterListBindingSource
-            // 
-            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
             // 
             // buttonNext
             // 
@@ -253,13 +243,13 @@ namespace ACT_RoR_Parcels
             this.checkBoxImport.UseVisualStyleBackColor = true;
             this.checkBoxImport.CheckedChanged += new System.EventHandler(this.checkBoxImport_CheckedChanged);
             // 
-            // contextMenuStrip1
+            // contextMenuStripLoot
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStripLoot.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addLootToolStripMenuItem,
             this.deleteLootToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(144, 48);
+            this.contextMenuStripLoot.Name = "contextMenuStrip1";
+            this.contextMenuStripLoot.Size = new System.Drawing.Size(144, 48);
             // 
             // addLootToolStripMenuItem
             // 
@@ -275,19 +265,46 @@ namespace ACT_RoR_Parcels
             this.deleteLootToolStripMenuItem.Text = "Delete Loot...";
             this.deleteLootToolStripMenuItem.Click += new System.EventHandler(this.deleteLootToolStripMenuItem_Click);
             // 
-            // contextMenuStrip2
+            // contextMenuStripInRaid
             // 
-            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStripInRaid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toggleToolStripMenuItem});
-            this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStripInRaid.Name = "contextMenuStrip2";
+            this.contextMenuStripInRaid.Size = new System.Drawing.Size(110, 26);
             // 
             // toggleToolStripMenuItem
             // 
             this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
-            this.toggleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toggleToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.toggleToolStripMenuItem.Text = "Toggle";
             this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
+            // 
+            // contextMenuStripAlts
+            // 
+            this.contextMenuStripAlts.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.manageAltsToolStripMenuItem});
+            this.contextMenuStripAlts.Name = "contextMenuStripAlts";
+            this.contextMenuStripAlts.Size = new System.Drawing.Size(150, 26);
+            // 
+            // manageAltsToolStripMenuItem
+            // 
+            this.manageAltsToolStripMenuItem.Name = "manageAltsToolStripMenuItem";
+            this.manageAltsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.manageAltsToolStripMenuItem.Text = "Manage Alts...";
+            this.manageAltsToolStripMenuItem.Click += new System.EventHandler(this.manageAltsToolStripMenuItem_Click);
+            // 
+            // Player
+            // 
+            this.Player.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Player.DataPropertyName = "Player";
+            this.Player.HeaderText = "Player";
+            this.Player.Name = "Player";
+            this.Player.ReadOnly = true;
+            this.Player.Width = 61;
+            // 
+            // looterListBindingSource
+            // 
+            this.looterListBindingSource.DataSource = typeof(ACT_RoR_Parcels.LooterList);
             // 
             // RoRParcel
             // 
@@ -299,12 +316,13 @@ namespace ACT_RoR_Parcels
             this.Size = new System.Drawing.Size(686, 384);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lootersBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.contextMenuStrip2.ResumeLayout(false);
+            this.contextMenuStripLoot.ResumeLayout(false);
+            this.contextMenuStripInRaid.ResumeLayout(false);
+            this.contextMenuStripAlts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.looterListBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -325,17 +343,18 @@ namespace ACT_RoR_Parcels
         private Button buttonHelp;
 
         #endregion
-
-        private DataGridViewTextBoxColumn playerDataGridViewTextBoxColumn;
+        private ContextMenuStrip contextMenuStripLoot;
+        private ToolStripMenuItem addLootToolStripMenuItem;
+        private ToolStripMenuItem deleteLootToolStripMenuItem;
+        private ContextMenuStrip contextMenuStripInRaid;
+        private ToolStripMenuItem toggleToolStripMenuItem;
+        private ContextMenuStrip contextMenuStripAlts;
+        private ToolStripMenuItem manageAltsToolStripMenuItem;
+        private DataGridViewTextBoxColumn Player;
         private DataGridViewTextBoxColumn InRaid;
         private DataGridViewTextBoxColumn T1Count;
         private DataGridViewComboBoxColumn DateColumn;
         private DataGridViewTextBoxColumn T2Count;
         private DataGridViewComboBoxColumn T2DateColumn;
-        private ContextMenuStrip contextMenuStrip1;
-        private ToolStripMenuItem addLootToolStripMenuItem;
-        private ToolStripMenuItem deleteLootToolStripMenuItem;
-        private ContextMenuStrip contextMenuStrip2;
-        private ToolStripMenuItem toggleToolStripMenuItem;
     }
 }

@@ -17,12 +17,8 @@ The `[Pick Next]` button would result in the following sort if the current zone 
 
 ![Pick Next T2](images/t2-random.png)
 
-# Version 1.4 Changes
-* Right-click the `In Raid` cell to toggle a player's status.
-* Fix sharing across time zones. Loot times are now stored in universal time rather than local time. In previous versions, mixing local times from the log file with local times shared from a user in another time zone resulted in duplicate counts. 
-	* This version will convert the times stored by previous versions. This conversion is benign for times received from the log file (their local time was correct). The new time will be incorrect for times shared from another player in another time zone (their local time was for a different time zone).
-	* If any user(s) had received any shared data from a different time zone, the easiest way to fix any future sharing is to start with a clean list, as described below:
-     	* Have everyone update the plugin, then designate one person as the "master" list. All users other than the "master" should delete their entire list (select all rows and press the `Delete` key). Then have the "master" share their entire list. 
+# Version 1.5 Changes
+* Right-click the `Player` cell to track alts.
 
 # Loot Data Input
 The plugin automatically gathers loot data from log files or shares.
@@ -30,6 +26,20 @@ The plugin automatically gathers loot data from log files or shares.
 The plugin can parse old log files when using ACT's `Import/Export` tab if the plugin's `Parse Imports` checkbox is checked.
 
 To manually modify loot data, right click one of the `Count` columns and choose the appropriate menu. The counts are generated from the list of loot dates, so modifying the counts is accomplised by adding or removing dates.
+
+# Player Alts
+The plugin can be set up such that a player and their alts are all treated as a single looter. Multiple players may be added and linked together at once. The setup dialog is accessed by right-clicking the _Player_, resulting in something like the dialog below for _Player2_:
+
+![Alts](images/player-alts.png)
+
+In the example above, _Player7_ has been double-clicked in the _Raiders_ list to add it to _Player2's_ alts. Presing the __[Link]__ button will record _Player2_ and _Player7_ to be the same looter. (_Player2_ will also show up in _Player7's_ alts.) From that point on, when either _Player2_ or _Player7_ loots a chest, both player's counts will increment. 
+
+The radio buttons in the _Link Alts_ section determine how existing loot counts are handled when the __[Link]__ button is pressed.
+* _Add Loot Counts_: The loot dates for all players in the list are concatenated so that all players end up with the sum of looted items in each _Count_ column. For example, if _Player2_ had a _T1 Count_ of 1 and _Player7_ had a _T1 Count_ of 2, both players would end up with a _T1 Count_ of 3 (if all 3 loot dates are different).
+* _Keep Max Count_: The loot dates from whichever player had the highest count in each _Count_ column are assigned to all players in the list. For example, if _Player2_ had a _T1 Count_ of 1 and _Player7_ had a _T1 Count_ of 2, both players would end up with a _T1 Count_ of 2.
+* _Keep Min Count_: The loot dates from whichever player had the lowest count in each _Count_ column are assigned to all players in the list. For example, if _Player2_ had a _T1 Count_ of 1 and _Player7_ had a _T1 Count_ of 2, both players would end up with a _T1 Count_ of 1.
+
+Selecting one of the players in the lefthand list enables the _Split Alt_ section. Pressing the __[Split]__ button will then remove the selected player from the list of players that share a loot drop. Loot dates for all involved players are not changed.
 
 # Sharing
 The player list can be shared with other plugin users via the `[Share]` button.

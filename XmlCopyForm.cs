@@ -132,6 +132,8 @@ namespace ACT_RoR_Parcels
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"<Parcel P='{looter.Player}");
+            foreach (string alt in looter.Alts)
+                sb.Append($",{alt}");
 
             int tier = -1;
             int prevTier = -1;
@@ -212,11 +214,15 @@ namespace ACT_RoR_Parcels
             StringBuilder sb = new StringBuilder();
             string macroPrefix = _prefix.Replace("/", "").Trim();
             sb.Append($"{macroPrefix} <Parcel P='");
-            bool stillRoom = (sb.Length + _looters[st.playerIndex].Player.Length + 20) < maxMacroLen;
+            string alts = string.Join(",", _looters[st.playerIndex].Alts);
+            bool stillRoom = (sb.Length + _looters[st.playerIndex].Player.Length + alts.Length + 20) < maxMacroLen;
             for (; st.playerIndex < _looters.Count && stillRoom; st.playerIndex++)
             {
                 Looter looter = _looters[st.playerIndex];
+                alts = string.Join(",", looter.Alts);
                 sb.Append($"{looter.Player}");
+                if(!string.IsNullOrEmpty(alts))
+                    sb.Append($",{alts}");
                 int tier = -1;
                 int prevTier = -1;
                 DateTime time;
