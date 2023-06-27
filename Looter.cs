@@ -13,6 +13,8 @@ namespace ACT_RoR_Parcels
         [XmlAttribute]
         public string Player { get; set; }
         [XmlAttribute]
+        public bool PrecludeT1 { get; set; } = false;
+        [XmlAttribute]
         public int T1Count { get { return lootDates.Count; }  }
         public int T2Count { get { return T2LootDates.Count; }  }
 

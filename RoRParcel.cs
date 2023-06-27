@@ -17,15 +17,15 @@ using System.Linq;
 [assembly: AssemblyTitle("RoR Parcel Plugin")]
 [assembly: AssemblyDescription("Tracks looting of Locked Parcels in Renewal of Ro raid zones")]
 [assembly: AssemblyCompany("Mineeme")]
-[assembly: AssemblyVersion("1.5.0.0")]
+[assembly: AssemblyVersion("1.6.0.0")]
 
 namespace ACT_RoR_Parcels
 {
     public partial class RoRParcel : UserControl, IActPluginV1
 	{
 
-        string[] T1Zones = { "The Hunt", "Standing Storm" };
-        string[] T2Zones = { "Boundless Gulf" };
+        string[] T1Zones = { "The Hunt", "Standing Storm", "Boundless Gulf" };
+        string[] T2Zones = { "" };
         List<string> T1ZoneList;
         List<string> T2ZoneList;
 
@@ -476,8 +476,9 @@ namespace ACT_RoR_Parcels
 
         private void UiWhoRaid( object o)
         {
-            foreach (string s in whoRaid)
+            for(int i=0; i<whoRaid.Count; i++)
             {
+                string s = whoRaid[i];
                 Looter looter = looterList.Find(x => x.Player == s);
                 if (looter == null)
                 {
@@ -489,7 +490,7 @@ namespace ACT_RoR_Parcels
             }
             foreach (Looter looter in looterList)
             {
-                if (whoRaid.Contains(looter.Player))
+                if (whoRaid.Contains(looter.Player) && looter.PrecludeT1 == false)
                     looter.InRaid = 1;
                 else
                     looter.InRaid = 0;
@@ -502,7 +503,7 @@ namespace ACT_RoR_Parcels
             string sortFor = "T1";
             string zone1 = T1ZoneList.Find(x => ActGlobals.oFormActMain.CurrentZone.Contains(x));
             string zone2 = T2ZoneList.Find(x => ActGlobals.oFormActMain.CurrentZone.Contains(x));
-            if (zone1 != null || (zone1 == null && zone2 == null))
+            if (!string.IsNullOrEmpty(zone1) || (string.IsNullOrEmpty(zone1) && string.IsNullOrEmpty(zone2)))
             {
                 LooterSorter looterSorter = new LooterSorter("In Raid", SortOrder.Descending);
                 looterList.Sort(looterSorter);
@@ -748,7 +749,10 @@ namespace ACT_RoR_Parcels
             if (looterList[contextRow].InRaid == 1)
                 looterList[contextRow].InRaid = 0;
             else // otherwise set to in-raid
+            {
                 looterList[contextRow].InRaid = 1;
+                looterList[contextRow].PrecludeT1 = false;
+            }
             UiUpdateGrid(null);
         }
 
@@ -758,6 +762,21 @@ namespace ACT_RoR_Parcels
             alts.ShowDialog(ActGlobals.oFormActMain);
             if (alts.dataChanged)
                 UiUpdateGrid(null);
+        }
+
+        private void precludeT1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            looterList[contextRow].PrecludeT1 = !looterList[contextRow].PrecludeT1;
+            UiUpdateGrid(null);
+        }
+
+        private void contextMenuStripInRaid_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (looterList[contextRow].PrecludeT1)
+                precludeT1ToolStripMenuItem.Checked = true;
+            else
+                precludeT1ToolStripMenuItem.Checked = false;
+
         }
     }
 }

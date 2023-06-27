@@ -17,8 +17,9 @@ The `[Pick Next]` button would result in the following sort if the current zone 
 
 ![Pick Next T2](images/t2-random.png)
 
-# Version 1.5 Changes
-* Right-click the `Player` cell to track alts.
+# Version 1.6 Changes
+* Added right-click `In Raid` cell menu to presistently remove a player from the eligible looter list.
+* Removed T2 looting parsing for `The Boundless Gulf` raid zone.
 
 # Loot Data Input
 The plugin automatically gathers loot data from log files or shares.
